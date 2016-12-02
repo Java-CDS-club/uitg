@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+		  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/application.xml, /WEB-INF/security.xml</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+
+    <servlet>
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+    	<description>
+    	</description>
+    	<display-name>EncryptionServlet</display-name>
+    	<servlet-name>EncryptionServlet</servlet-name>
+    	<servlet-class>com.uitg.oa.util.EncryptionServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>EncryptionServlet</servlet-name>
+    	<url-pattern>/EncryptionServlet</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>  
+        <filter-name>jcaptchaFilter</filter-name>  
+        <filter-class>com.uitg.oa.util.jcaptcha.JCaptchaFilter</filter-class>  
+        <init-param>  
+            <param-name>failureUrl</param-name>  
+            <param-value>/login?error=verifycode</param-value>  
+        </init-param>  
+    </filter>  
+    
+    <filter-mapping>  
+        <filter-name>jcaptchaFilter</filter-name>  
+        <url-pattern>/security_check</url-pattern>  
+    </filter-mapping>  
+    
+    <filter-mapping>  
+        <filter-name>jcaptchaFilter</filter-name>  
+        <url-pattern>/jcaptcha</url-pattern>  
+    </filter-mapping>  
+ 
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <mime-mapping>
+	    <extension>pdf</extension>
+	    <mime-type>application/pdf</mime-type>
+	  </mime-mapping>
+
+    <jsp-config>
+        <taglib>
+            <taglib-uri>https://github.com/xpjsky/devices/tags</taglib-uri>
+            <taglib-location>/WEB-INF/tld/device.tld</taglib-location>
+        </taglib>
+    </jsp-config>
+
+    <resource-ref>
+        <description>MySQL BoneCP</description>
+        <res-ref-name>jdbc/jxfdb</res-ref-name>
+        <res-type>com.jolbox.bonecp.BoneCPDataSource</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
+    
+    <welcome-file-list> 
+	   <welcome-file>/index</welcome-file>
+	</welcome-file-list> 
+</web-app>
